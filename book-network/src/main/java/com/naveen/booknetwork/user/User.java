@@ -1,6 +1,8 @@
 package com.naveen.booknetwork.user;
 
 
+import com.naveen.booknetwork.book.Book;
+import com.naveen.booknetwork.history.BookTransactionHistory;
 import com.naveen.booknetwork.role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,6 +57,12 @@ public class User implements UserDetails, Principal {
     private boolean enabled;
     @ManyToMany(fetch = EAGER)
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
