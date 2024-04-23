@@ -55,7 +55,7 @@ public class AuthenticationService {
         userRepository.save(user);
         sendValidationEmail(user);
     }
-////////////////////////////
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -93,6 +93,19 @@ public class AuthenticationService {
         tokenRepository.save(savedToken);
     }
 
+    private void sendValidationEmail(User user) throws MessagingException {
+        var newToken = generateAndSaveActivationToken(user);
+
+        emailService.sendEmail(
+                user.getEmail(),
+                user.getFullName(),
+                EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl,
+                newToken,
+                "Account activation"
+        );
+    }
+
     private String generateAndSaveActivationToken(User user) {
         // Generate a token
         String generatedToken = generateActivationCode(6);
@@ -105,19 +118,6 @@ public class AuthenticationService {
         tokenRepository.save(token);
 
         return generatedToken;
-    }
-
-    private void sendValidationEmail(User user) throws MessagingException {
-        var newToken = generateAndSaveActivationToken(user);
-
-        emailService.sendEmail(
-                user.getEmail(),
-                user.getFullName(),
-                EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrl,
-                newToken,
-                "Account activation"
-        );
     }
 
     private String generateActivationCode(int length) {
