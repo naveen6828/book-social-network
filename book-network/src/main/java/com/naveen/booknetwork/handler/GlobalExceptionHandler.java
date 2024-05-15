@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleException() {
-        return ResponseEntity
+            return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(
                         ExceptionResponse.builder()
